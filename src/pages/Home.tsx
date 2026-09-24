@@ -18,26 +18,25 @@ import { Link } from "react-router";
 /* ------------------------------------------------------------------ */
 
 const DEMO_VALUES = [7, 23, 4, 42, 19];
+/** stack height cycles: push, push, pop, pop — derived from one tick */
+const HEIGHTS = [3, 4, 5, 4];
 
 function MiniStackDemo() {
-  const [items, setItems] = useState<number[]>([4, 42, 19]);
-  const [next, setNext] = useState(2);
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setItems((prev) => {
-        if (prev.length >= 4) return [DEMO_VALUES[0]];
-        const value = DEMO_VALUES[next % DEMO_VALUES.length];
-        setNext((n) => n + 1);
-        return [...prev, value];
-      });
-    }, 1100);
+    const timer = window.setInterval(() => setTick((n) => n + 1), 1100);
     return () => window.clearInterval(timer);
-  }, [next]);
+  }, []);
+
+  const len = HEIGHTS[tick % HEIGHTS.length];
+  const items = Array.from(
+    { length: len },
+    (_, k) => DEMO_VALUES[(tick + k) % DEMO_VALUES.length],
+  );
 
   return (
     <div className="flex h-64 w-44 flex-col-reverse items-center justify-start gap-2 rounded-2xl border border-border/70 bg-slate-950/60 p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.05)]">
-      <div className="pointer-events-none absolute" />
       {items.map((value, i) => (
         <motion.div
           key={`${value}-${i}`}

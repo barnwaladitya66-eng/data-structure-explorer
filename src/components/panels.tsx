@@ -6,7 +6,10 @@ import { Activity } from "lucide-react";
 /* ComplexityPanel — Big-O reference for every operation               */
 /* ------------------------------------------------------------------ */
 
-const COMPLEXITY_ROWS: { key: keyof StructureMeta; label: string }[] = [
+const COMPLEXITY_ROWS: {
+  key: "access" | "search" | "insert" | "delete" | "space";
+  label: string;
+}[] = [
   { key: "access", label: "Access" },
   { key: "search", label: "Search" },
   { key: "insert", label: "Insert" },

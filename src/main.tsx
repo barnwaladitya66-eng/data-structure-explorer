@@ -7,10 +7,15 @@ import { ConvexReactClient } from "convex/react";
 import React, { StrictMode, useEffect, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
+import { SiteLayout } from "@/components/SiteLayout";
 import "./index.css";
 
 // Lazy load route components for better code splitting
-const Landing = lazy(() => import("./pages/Landing.tsx"));
+const Home = lazy(() => import("./pages/Home.tsx"));
+const StackPage = lazy(() => import("./pages/StackPage.tsx"));
+const QueuePage = lazy(() => import("./pages/QueuePage.tsx"));
+const TreePage = lazy(() => import("./pages/TreePage.tsx"));
+const GraphPage = lazy(() => import("./pages/GraphPage.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
@@ -119,7 +124,15 @@ createRoot(document.getElementById("root")!).render(
           <RouteSyncer />
           <Suspense fallback={<RouteLoading />}>
             <Routes>
-              <Route path="/" element={<Landing />} />
+              {/* StructureLab — every public page shares the site shell */}
+              <Route element={<SiteLayout />}>
+                <Route index element={<Home />} />
+                <Route path="stack" element={<StackPage />} />
+                <Route path="queue" element={<QueuePage />} />
+                <Route path="tree" element={<TreePage />} />
+                <Route path="graph" element={<GraphPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
               <Route
                 path="/auth"
                 element={<AuthPage redirectAfterAuth="/dashboard" />}
@@ -132,7 +145,6 @@ createRoot(document.getElementById("root")!).render(
                   </RequireAuth>
                 }
               />
-              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

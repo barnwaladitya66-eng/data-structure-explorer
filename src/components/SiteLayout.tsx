@@ -5,8 +5,8 @@ import { ACCENTS, STRUCTURES } from "@/lib/structures";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Menu, Network, X } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
-import { NavLink, useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation } from "react-router";
 
 const NAV_ITEMS = [
   { to: "/", label: "Home" },
@@ -176,7 +176,7 @@ function SiteFooter() {
 /* Layout shell                                                        */
 /* ------------------------------------------------------------------ */
 
-export function SiteLayout({ children }: { children: ReactNode }) {
+export function SiteLayout() {
   const location = useLocation();
 
   // start every page from the top on route change
@@ -211,7 +211,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           transition={{ duration: 0.28, ease: "easeOut" }}
           className="relative z-10"
         >
-          {children}
+          <Outlet />
           <SiteFooter />
         </motion.main>
       </AnimatePresence>
