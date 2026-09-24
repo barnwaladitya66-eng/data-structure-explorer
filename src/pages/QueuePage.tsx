@@ -3,8 +3,7 @@ import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  QUEUE_CODE_JS,
-  QUEUE_CODE_PY,
+  SNIPPETS,
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
@@ -197,7 +196,7 @@ export default function QueuePage() {
           it O(1).
         </p>
         <div className="mt-5">
-          <CodeTabs js={QUEUE_CODE_JS} py={QUEUE_CODE_PY} meta={meta} />
+          <CodeTabs snippets={SNIPPETS.queue} meta={meta} />
         </div>
       </section>
     </div>

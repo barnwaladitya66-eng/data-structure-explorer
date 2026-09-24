@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { tokenColor, tokenize } from "@/lib/highlight";
+import { tokenColor, tokenize, type CodeLang } from "@/lib/highlight";
 import type { AccentName, StructureMeta } from "@/lib/structures";
 import { Check, Copy, FileCode2 } from "lucide-react";
 import { useState } from "react";
@@ -16,7 +16,7 @@ const ACCENT_TEXT: Record<AccentName, string> = {
 /* Token renderer                                                      */
 /* ------------------------------------------------------------------ */
 
-function Tokens({ code, lang }: { code: string; lang: "js" | "py" }) {
+function Tokens({ code, lang }: { code: string; lang: CodeLang }) {
   const tokens = tokenize(code, lang);
   return (
     <code className="block whitespace-pre font-mono text-[12.5px] leading-relaxed">
@@ -35,7 +35,7 @@ function Tokens({ code, lang }: { code: string; lang: "js" | "py" }) {
 
 interface CodeBlockProps {
   code: string;
-  lang: "js" | "py";
+  lang: CodeLang;
   filename: string;
 }
 
@@ -80,38 +80,49 @@ export function CodeBlock({ code, lang, filename }: CodeBlockProps) {
 }
 
 /* ------------------------------------------------------------------ */
-/* CodeTabs — JS / Python switcher over snippets                       */
+/* CodeTabs — multi-language switcher over the snippet group           */
 /* ------------------------------------------------------------------ */
 
+const LANGUAGES: { id: CodeLang; label: string; active: string; file: string }[] = [
+  { id: "js", label: "JavaScript", active: "data-[state=active]:text-cyan-300", file: "js" },
+  { id: "py", label: "Python", active: "data-[state=active]:text-amber-300", file: "py" },
+  { id: "c", label: "C", active: "data-[state=active]:text-sky-300", file: "c" },
+  { id: "cpp", label: "C++", active: "data-[state=active]:text-rose-300", file: "cpp" },
+  { id: "java", label: "Java", active: "data-[state=active]:text-orange-300", file: "java" },
+];
+
 interface CodeTabsProps {
-  js: string;
-  py: string;
+  snippets: Record<CodeLang, string>;
   meta: StructureMeta;
 }
 
-export function CodeTabs({ js, py, meta }: CodeTabsProps) {
+export function CodeTabs({ snippets, meta }: CodeTabsProps) {
+  const base = meta.name.toLowerCase();
   return (
     <Tabs defaultValue="js" className="gap-4">
-      <TabsList className="h-9 w-fit bg-slate-900/70 p-1">
-        <TabsTrigger
-          value="js"
-          className="h-7 gap-1.5 rounded-md px-3 text-xs font-medium data-[state=active]:bg-slate-800 data-[state=active]:text-cyan-300"
-        >
-          JavaScript
-        </TabsTrigger>
-        <TabsTrigger
-          value="py"
-          className="h-7 gap-1.5 rounded-md px-3 text-xs font-medium data-[state=active]:bg-slate-800 data-[state=active]:text-amber-300"
-        >
-          Python
-        </TabsTrigger>
+      <TabsList className="h-9 w-fit flex-wrap bg-slate-900/70 p-1">
+        {LANGUAGES.map((l) => (
+          <TabsTrigger
+            key={l.id}
+            value={l.id}
+            className={
+              "h-7 rounded-md px-3 text-xs font-medium data-[state=active]:bg-slate-800 " +
+              l.active
+            }
+          >
+            {l.label}
+          </TabsTrigger>
+        ))}
       </TabsList>
-      <TabsContent value="js">
-        <CodeBlock code={js} lang="js" filename={`${meta.name.toLowerCase()}.js`} />
-      </TabsContent>
-      <TabsContent value="py">
-        <CodeBlock code={py} lang="py" filename={`${meta.name.toLowerCase()}.py`} />
-      </TabsContent>
+      {LANGUAGES.map((l) => (
+        <TabsContent key={l.id} value={l.id}>
+          <CodeBlock
+            code={snippets[l.id]}
+            lang={l.id}
+            filename={`${base}.${l.file}`}
+          />
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }

@@ -3,8 +3,7 @@ import { OpLog, ComplexityPanel, type LogEntry } from "@/components/panels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  STACK_CODE_JS,
-  STACK_CODE_PY,
+  SNIPPETS,
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
@@ -197,7 +196,7 @@ export default function StackPage() {
           A stack is just an array you only ever touch from one end.
         </p>
         <div className="mt-5">
-          <CodeTabs js={STACK_CODE_JS} py={STACK_CODE_PY} meta={meta} />
+          <CodeTabs snippets={SNIPPETS.stack} meta={meta} />
         </div>
       </section>
     </div>

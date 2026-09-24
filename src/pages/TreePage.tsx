@@ -3,8 +3,7 @@ import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  TREE_CODE_JS,
-  TREE_CODE_PY,
+  SNIPPETS,
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
@@ -389,7 +388,7 @@ export default function TreePage() {
           from, as long as the tree stays balanced.
         </p>
         <div className="mt-5">
-          <CodeTabs js={TREE_CODE_JS} py={TREE_CODE_PY} meta={meta} />
+          <CodeTabs snippets={SNIPPETS.tree} meta={meta} />
         </div>
       </section>
     </div>

@@ -3,8 +3,7 @@ import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  GRAPH_CODE_JS,
-  GRAPH_CODE_PY,
+  SNIPPETS,
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
@@ -531,7 +530,7 @@ export default function GraphPage() {
           the queue you met on its own page, DFS on a stack.
         </p>
         <div className="mt-5">
-          <CodeTabs js={GRAPH_CODE_JS} py={GRAPH_CODE_PY} meta={meta} />
+          <CodeTabs snippets={SNIPPETS.graph} meta={meta} />
         </div>
       </section>
     </div>

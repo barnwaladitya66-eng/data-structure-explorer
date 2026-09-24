@@ -370,3 +370,418 @@ class Graph:
                     visited.add(n)
                     queue.append(n)
         return order`;
+
+/* ------------------------------------------------------------------ */
+/* C implementations                                                   */
+/* ------------------------------------------------------------------ */
+
+export const STACK_CODE_C = `#include <stdio.h>
+#include <stdbool.h>
+
+#define CAPACITY 16
+
+typedef struct {
+  int items[CAPACITY];
+  int top;                     // index of the top element, -1 = empty
+} Stack;
+
+void init(Stack *s)          { s->top = -1; }
+bool isEmpty(const Stack *s) { return s->top == -1; }
+
+void push(Stack *s, int value) {   // O(1) — add to the top
+  if (s->top == CAPACITY - 1) {    // overflow guard
+    printf("stack overflow\\n");
+    return;
+  }
+  s->items[++s->top] = value;
+}
+
+int pop(Stack *s) {                // O(1) — remove from the top
+  if (isEmpty(s)) {
+    printf("stack underflow\\n");
+    return -1;
+  }
+  return s->items[s->top--];
+}
+
+int peek(const Stack *s) {         // O(1) — look, don't remove
+  return isEmpty(s) ? -1 : s->items[s->top];
+}`;
+
+export const QUEUE_CODE_C = `#include <stdio.h>
+#include <stdbool.h>
+
+#define CAPACITY 16
+
+typedef struct {
+  int items[CAPACITY];
+  int head;                    // index of the front element
+  int tail;                    // one past the last element
+} Queue;
+
+void init(Queue *q)          { q->head = q->tail = 0; }
+bool isEmpty(const Queue *q) { return q->head == q->tail; }
+int  size(const Queue *q)    { return q->tail - q->head; }
+
+void enqueue(Queue *q, int value) {   // O(1) — join at the rear
+  if (size(q) == CAPACITY) {
+    printf("queue full\\n");
+    return;
+  }
+  q->items[q->tail++] = value;
+}
+
+int dequeue(Queue *q) {               // O(1) — leave from the front
+  if (isEmpty(q)) {
+    printf("queue empty\\n");
+    return -1;
+  }
+  return q->items[q->head++];
+}
+
+int front(const Queue *q) {
+  return isEmpty(q) ? -1 : q->items[q->head];
+}`;
+
+export const TREE_CODE_C = `#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+  int value;
+  struct Node *left;
+  struct Node *right;
+} Node;
+
+Node *newNode(int value) {
+  Node *n = malloc(sizeof(Node));
+  n->value = value;
+  n->left = n->right = NULL;
+  return n;
+}
+
+Node *insert(Node *root, int value) {   // O(log n) if balanced
+  if (!root) return newNode(value);
+  if (value < root->value)
+    root->left = insert(root->left, value);
+  else
+    root->right = insert(root->right, value);
+  return root;
+}
+
+void inorder(const Node *root) {        // prints sorted order
+  if (!root) return;
+  inorder(root->left);
+  printf("%d ", root->value);
+  inorder(root->right);
+}
+
+void freeTree(Node *root) {             // post-order cleanup
+  if (!root) return;
+  freeTree(root->left);
+  freeTree(root->right);
+  free(root);
+}`;
+
+export const GRAPH_CODE_C = `#include <stdio.h>
+#include <stdbool.h>
+
+#define V 6                             // number of nodes
+
+/* Undirected graph as an adjacency matrix. */
+bool adj[V][V];
+
+void addEdge(int a, int b) {            // O(1)
+  adj[a][b] = adj[b][a] = true;
+}
+
+void bfs(int start) {                   // O(V + E) — level by level
+  bool visited[V] = { false };
+  int queue[V], head = 0, tail = 0;
+
+  visited[start] = true;
+  queue[tail++] = start;
+
+  while (head < tail) {
+    int node = queue[head++];
+    printf("%d ", node);
+    for (int n = 0; n < V; n++) {
+      if (adj[node][n] && !visited[n]) {
+        visited[n] = true;
+        queue[tail++] = n;
+      }
+    }
+  }
+}`;
+
+/* ------------------------------------------------------------------ */
+/* Java implementations                                                */
+/* ------------------------------------------------------------------ */
+
+export const STACK_CODE_JAVA = `import java.util.ArrayList;
+
+class Stack<T> {
+  private final ArrayList<T> items = new ArrayList<>();
+
+  public void push(T value) {        // O(1) — add to the top
+    items.add(value);
+  }
+
+  public T pop() {                   // O(1) — remove from the top
+    if (isEmpty()) throw new IllegalStateException("stack underflow");
+    return items.remove(items.size() - 1);
+  }
+
+  public T peek() {                  // O(1) — look, don't remove
+    if (isEmpty()) return null;
+    return items.get(items.size() - 1);
+  }
+
+  public boolean isEmpty() {
+    return items.isEmpty();
+  }
+
+  public int size() {
+    return items.size();
+  }
+}`;
+
+export const QUEUE_CODE_JAVA = `import java.util.ArrayDeque;
+import java.util.Queue;
+
+class Demo {
+  public static void main(String[] args) {
+    Queue<Integer> q = new ArrayDeque<>();   // O(1) enqueue & dequeue
+
+    q.offer(12);                             // join at the rear
+    q.offer(31);
+    q.offer(7);
+
+    System.out.println(q.peek());            // front, don't remove
+    System.out.println(q.poll());            // leave from the front
+    System.out.println(q.size());
+    System.out.println(q.isEmpty());
+  }
+}`;
+
+export const TREE_CODE_JAVA = `class Node {
+  int value;
+  Node left, right;
+
+  Node(int value) { this.value = value; }
+}
+
+class BST {
+  Node root;
+
+  void insert(int value) {           // O(log n) if balanced
+    root = insert(root, value);
+  }
+
+  private Node insert(Node node, int value) {
+    if (node == null) return new Node(value);
+    if (value < node.value) node.left = insert(node.left, value);
+    else                    node.right = insert(node.right, value);
+    return node;
+  }
+
+  void inorder(Node node) {          // visits values in sorted order
+    if (node == null) return;
+    inorder(node.left);
+    System.out.print(node.value + " ");
+    inorder(node.right);
+  }
+}`;
+
+export const GRAPH_CODE_JAVA = `import java.util.*;
+
+class Graph {
+  private final Map<String, List<String>> adj = new HashMap<>();
+
+  void addEdge(String a, String b) {          // O(1), undirected
+    adj.computeIfAbsent(a, k -> new ArrayList<>()).add(b);
+    adj.computeIfAbsent(b, k -> new ArrayList<>()).add(a);
+  }
+
+  List<String> bfs(String start) {            // O(V + E) — level by level
+    Set<String> visited = new HashSet<>(List.of(start));
+    List<String> order = new ArrayList<>();
+    Queue<String> queue = new ArrayDeque<>(List.of(start));
+
+    while (!queue.isEmpty()) {
+      String node = queue.poll();
+      order.add(node);
+      for (String n : adj.getOrDefault(node, List.of())) {
+        if (visited.add(n)) queue.offer(n);
+      }
+    }
+    return order;
+  }
+}`;
+
+/* ------------------------------------------------------------------ */
+/* C++ implementations                                                 */
+/* ------------------------------------------------------------------ */
+
+export const STACK_CODE_CPP = `#include <stack>
+#include <iostream>
+
+class Stack {
+  std::stack<int> items;
+
+ public:
+  void push(int value) {          // O(1) — add to the top
+    items.push(value);
+  }
+
+  int pop() {                     // O(1) — remove from the top
+    if (items.empty()) throw std::underflow_error("stack underflow");
+    int value = items.top();
+    items.pop();
+    return value;
+  }
+
+  int peek() const {              // O(1) — look, don't remove
+    if (items.empty()) throw std::underflow_error("stack empty");
+    return items.top();
+  }
+
+  bool isEmpty() const { return items.empty(); }
+  std::size_t size() const { return items.size(); }
+};`;
+
+export const QUEUE_CODE_CPP = `#include <queue>
+#include <iostream>
+
+class Queue {
+  std::queue<int> items;
+
+ public:
+  void enqueue(int value) {       // O(1) — join at the rear
+    items.push(value);
+  }
+
+  int dequeue() {                 // O(1) — leave from the front
+    if (items.empty()) throw std::underflow_error("queue empty");
+    int value = items.front();
+    items.pop();
+    return value;
+  }
+
+  int front() const {             // O(1) — look, don't remove
+    if (items.empty()) throw std::underflow_error("queue empty");
+    return items.front();
+  }
+
+  bool isEmpty() const { return items.empty(); }
+  std::size_t size() const { return items.size(); }
+};`;
+
+export const TREE_CODE_CPP = `#include <iostream>
+
+struct Node {
+  int value;
+  Node *left = nullptr;
+  Node *right = nullptr;
+  explicit Node(int v) : value(v) {}
+};
+
+class BST {
+  Node *root = nullptr;
+
+  Node *insert(Node *node, int value) {   // O(log n) if balanced
+    if (!node) return new Node(value);
+    if (value < node->value)
+      node->left = insert(node->left, value);
+    else
+      node->right = insert(node->right, value);
+    return node;
+  }
+
+  void inorder(Node *node) const {        // visits sorted order
+    if (!node) return;
+    inorder(node->left);
+    std::cout << node->value << ' ';
+    inorder(node->right);
+  }
+
+ public:
+  void insert(int value) { root = insert(root, value); }
+  void inorder() const { inorder(root); }
+};`;
+
+export const GRAPH_CODE_CPP = `#include <queue>
+#include <set>
+#include <unordered_map>
+#include <vector>
+
+class Graph {
+  std::unordered_map<std::string, std::vector<std::string>> adj;
+
+ public:
+  void addEdge(const std::string& a, const std::string& b) {
+    adj[a].push_back(b);          // O(1), undirected
+    adj[b].push_back(a);
+  }
+
+  std::vector<std::string> bfs(const std::string& start) {
+    std::set<std::string> visited{start};
+    std::vector<std::string> order;
+    std::queue<std::string> queue{{start}};
+
+    while (!queue.empty()) {      // O(V + E) — level by level
+      std::string node = queue.front();
+      queue.pop();
+      order.push_back(node);
+      for (const auto& n : adj[node]) {
+        if (visited.insert(n).second) queue.push(n);
+      }
+    }
+    return order;
+  }
+};`;
+
+/* ------------------------------------------------------------------ */
+/* Tabbed snippet groups — one entry per language per structure        */
+/* ------------------------------------------------------------------ */
+
+export type SnippetLang = "js" | "py" | "c" | "cpp" | "java";
+
+export interface Snippet {
+  lang: SnippetLang;
+  code: string;
+}
+
+export const SNIPPETS: Record<
+  StructureMeta["slug"],
+  Record<SnippetLang, string>
+> = {
+  stack: {
+    js: STACK_CODE_JS,
+    py: STACK_CODE_PY,
+    c: STACK_CODE_C,
+    cpp: STACK_CODE_CPP,
+    java: STACK_CODE_JAVA,
+  },
+  queue: {
+    js: QUEUE_CODE_JS,
+    py: QUEUE_CODE_PY,
+    c: QUEUE_CODE_C,
+    cpp: QUEUE_CODE_CPP,
+    java: QUEUE_CODE_JAVA,
+  },
+  tree: {
+    js: TREE_CODE_JS,
+    py: TREE_CODE_PY,
+    c: TREE_CODE_C,
+    cpp: TREE_CODE_CPP,
+    java: TREE_CODE_JAVA,
+  },
+  graph: {
+    js: GRAPH_CODE_JS,
+    py: GRAPH_CODE_PY,
+    c: GRAPH_CODE_C,
+    cpp: GRAPH_CODE_CPP,
+    java: GRAPH_CODE_JAVA,
+  },
+  "": { js: "", py: "", c: "", cpp: "", java: "" },
+};
