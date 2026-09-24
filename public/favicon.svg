@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- dark navy tile -->
+  <rect width="64" height="64" rx="14" fill="#0a1a26"/>
+  <!-- cyan rounded-square border -->
+  <rect x="6" y="6" width="52" height="52" rx="13" fill="none" stroke="#25d8f2" stroke-width="3"/>
+  <!-- hierarchy icon: one node on top, two below -->
+  <g stroke="#25d8f2" stroke-width="3" fill="none" stroke-linecap="round">
+    <!-- connectors -->
+    <path d="M32 28v8"/>
+    <path d="M20 36h24"/>
+    <path d="M20 36v5"/>
+    <path d="M44 36v5"/>
+    <!-- top node -->
+    <rect x="26.5" y="17" width="11" height="11" rx="3" fill="#0a1a26"/>
+    <!-- bottom-left node -->
+    <rect x="14.5" y="41" width="11" height="11" rx="3" fill="#0a1a26"/>
+    <!-- bottom-right node -->
+    <rect x="38.5" y="41" width="11" height="11" rx="3" fill="#0a1a26"/>
+  </g>
+</svg>

@@ -167,6 +167,12 @@ function SiteFooter() {
           <span>© {new Date().getFullYear()} StructureLab. For teaching and learning.</span>
           <span className="font-mono">LIFO · FIFO · O(log n) · O(V + E)</span>
         </div>
+        <p className="mt-4 text-center text-xs text-slate-500">
+          Made by{" "}
+          <span className="font-semibold tracking-wide text-cyan-300/90">
+            ADITYA
+          </span>
+        </p>
       </div>
     </footer>
   );
