@@ -10,7 +10,7 @@
   - **Stack** — push/pop with animated LIFO cells and overflow guard
   - **Queue** — enqueue/dequeue with front/rear pointers
   - **Tree** — insert/search through a binary search tree, animated node-by-node traversal
-  - **Graph** — build an adjacency list and step through BFS/DFS traversal
+  - **Graph** — build an adjacency list and step through BFS/DFS traversal, plus a **GPS navigation simulator** where Dijkstra plans the fastest route across a weighted city map, with turn-by-turn directions and an animated car
 - **Implementation section on every page** with tabbed code snippets in **JavaScript, Python, C, C++, and Java**, with a lightweight zero-dependency syntax highlighter (custom tokenizer in `src/lib/highlight.ts`).
 - **Dark "gritted" theme** — dark navy backdrop, per-structure accent colors, grid backdrop, Framer Motion page transitions.
 - **Favicon + manifest** matching the site's cyan-on-navy brand tile.

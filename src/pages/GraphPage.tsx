@@ -1,4 +1,5 @@
 import { CodeTabs } from "@/components/CodeBlock";
+import { GpsMap } from "@/components/GpsMap";
 import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -521,6 +522,9 @@ export default function GraphPage() {
           <OpLog entries={log} />
         </div>
       </div>
+
+      {/* GPS navigation simulation — Dijkstra on a weighted city map */}
+      <GpsMap />
 
       {/* code */}
       <section className="mt-12">
