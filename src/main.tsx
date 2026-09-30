@@ -14,6 +14,7 @@ import "./index.css";
 const Home = lazy(() => import("./pages/Home.tsx"));
 const StackPage = lazy(() => import("./pages/StackPage.tsx"));
 const QueuePage = lazy(() => import("./pages/QueuePage.tsx"));
+const LinkedListPage = lazy(() => import("./pages/LinkedListPage.tsx"));
 const TreePage = lazy(() => import("./pages/TreePage.tsx"));
 const GraphPage = lazy(() => import("./pages/GraphPage.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
@@ -129,6 +130,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route index element={<Home />} />
                 <Route path="stack" element={<StackPage />} />
                 <Route path="queue" element={<QueuePage />} />
+                <Route path="linked" element={<LinkedListPage />} />
                 <Route path="tree" element={<TreePage />} />
                 <Route path="graph" element={<GraphPage />} />
                 <Route path="*" element={<NotFound />} />

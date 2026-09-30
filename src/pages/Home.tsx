@@ -101,10 +101,10 @@ export default function Home() {
               transition={{ duration: 0.55, delay: 0.16 }}
               className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
             >
-              StructureLab turns the four fundamentals — stacks, queues, trees
-              and graphs — into live, step-by-step visualizers. Push, dequeue,
-              traverse and search your way to intuition, with Big-O and clean
-              reference code alongside every demo.
+              StructureLab turns the fundamentals — stacks, queues, linked
+              lists, trees and graphs — into live, step-by-step visualizers.
+              Push, dequeue, relink, traverse and search your way to intuition,
+              with Big-O and clean reference code alongside every demo.
             </motion.p>
 
             <motion.div
@@ -135,9 +135,9 @@ export default function Home() {
               className="mt-10 grid max-w-md grid-cols-3 gap-4"
             >
               {[
-                ["4", "structures"],
-                ["12+", "live operations"],
-                ["2", "languages"],
+                ["5", "structures"],
+                ["16+", "live operations"],
+                ["5", "languages"],
               ].map(([value, label]) => (
                 <div key={label} className="rounded-xl border border-border/60 bg-slate-950/40 px-4 py-3">
                   <dt className="sr-only">{label}</dt>
@@ -169,7 +169,7 @@ export default function Home() {
               The lineup
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
-              Four structures. Zero fluff.
+              Five structures. Zero fluff.
             </h2>
           </div>
           <p className="max-w-sm text-sm text-muted-foreground">
@@ -337,6 +337,22 @@ export default function Home() {
                   className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 hover:text-emerald-200"
                 >
                   Open the tree <ArrowRight className="size-3" />
+                </Link>
+              </div>
+              <div className="rounded-2xl border border-rose-400/25 bg-rose-400/5 p-5">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-rose-300">
+                  pointer relinking
+                </p>
+                <p className="mt-3 text-sm font-semibold">Chains, not shifts</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Insert mid-list and watch pointers relink — no element ever
+                  shifts over.
+                </p>
+                <Link
+                  to="/linked"
+                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-rose-300 hover:text-rose-200"
+                >
+                  Open the linked list <ArrowRight className="size-3" />
                 </Link>
               </div>
               <div className="rounded-2xl border border-violet-400/25 bg-violet-400/5 p-5">

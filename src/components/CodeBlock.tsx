@@ -10,6 +10,7 @@ const ACCENT_TEXT: Record<AccentName, string> = {
   violet: "text-violet-300",
   emerald: "text-emerald-300",
   amber: "text-amber-300",
+  rose: "text-rose-300",
 };
 
 /* ------------------------------------------------------------------ */
@@ -97,7 +98,7 @@ interface CodeTabsProps {
 }
 
 export function CodeTabs({ snippets, meta }: CodeTabsProps) {
-  const base = meta.name.toLowerCase();
+  const base = meta.slug || meta.name.toLowerCase().replace(/\s+/g, "");
   return (
     <Tabs defaultValue="js" className="gap-4">
       <TabsList className="h-9 w-fit flex-wrap bg-slate-900/70 p-1">

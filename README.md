@@ -1,6 +1,6 @@
 # StructureLab
 
-**StructureLab** is a multi-page interactive educational site for teaching **Stack, Queue, Tree, and Graph** — built for teachers, demos, and self-study. Every structure gets its own page with a live, animated visualizer plus side-by-side reference implementations in **five languages**.
+**StructureLab** is a multi-page interactive educational site for teaching **Stack, Queue, Linked List, Tree, and Graph** — built for teachers, demos, and self-study. Every structure gets its own page with a live, animated visualizer plus side-by-side reference implementations in **five languages**.
 
 ![StructureLab](public/favicon.svg)
 
@@ -10,6 +10,7 @@
   - **Stack** — push/pop with animated LIFO cells and overflow guard
   - **Queue** — enqueue/dequeue with front/rear pointers
   - **Tree** — insert/search through a binary search tree, animated node-by-node traversal
+  - **Linked List** — singly, doubly, and circular variants with animated insert/delete at the head, middle, and tail, plus full traversal; every variant ships its own five-language implementation
   - **Graph** — build an adjacency list and step through BFS/DFS traversal, plus a **GPS navigation simulator** where Dijkstra plans the fastest route across a weighted city map, with turn-by-turn directions and an animated car
 - **Implementation section on every page** with tabbed code snippets in **JavaScript, Python, C, C++, and Java**, with a lightweight zero-dependency syntax highlighter (custom tokenizer in `src/lib/highlight.ts`).
 - **Dark "gritted" theme** — dark navy backdrop, per-structure accent colors, grid backdrop, Framer Motion page transitions.
@@ -22,6 +23,7 @@
 | `/`          | Landing page with structure cards and CTAs         |
 | `/stack`     | Stack visualizer + implementations                 |
 | `/queue`     | Queue visualizer + implementations                 |
+| `/linked`    | Linked list (singly / doubly / circular) + implementations |
 | `/tree`      | BST visualizer + implementations                   |
 | `/graph`     | Graph visualizer + implementations                 |
 | `/auth`      | Sign in / sign up (email OTP)                      |

@@ -1,9 +1,9 @@
-import { Binary, Code2, GitBranch, Layers, type LucideIcon } from "lucide-react";
+import { Binary, Code2, GitBranch, Layers, Link2, type LucideIcon } from "lucide-react";
 
-export type AccentName = "cyan" | "violet" | "emerald" | "amber";
+export type AccentName = "cyan" | "violet" | "emerald" | "amber" | "rose";
 
 export interface StructureMeta {
-  slug: "" | "stack" | "queue" | "tree" | "graph";
+  slug: "" | "stack" | "queue" | "linked" | "tree" | "graph";
   name: string;
   tagline: string;
   blurb: string;
@@ -41,6 +41,14 @@ export const ACCENTS: Record<
     border: "border-violet-400/30",
     glow: "shadow-[0_0_28px_-6px_rgb(167_139_250/0.45)]",
     dot: "bg-violet-400",
+  },
+  rose: {
+    text: "text-rose-300",
+    ring: "ring-rose-400/40",
+    bg: "bg-rose-400/10",
+    border: "border-rose-400/30",
+    glow: "shadow-[0_0_28px_-6px_rgb(251_113_133/0.45)]",
+    dot: "bg-rose-400",
   },
   emerald: {
     text: "text-emerald-300",
@@ -103,6 +111,28 @@ export const STRUCTURES: StructureMeta[] = [
       "BFS frontier when exploring a graph",
       "print jobs spooling to a printer",
       "customer support tickets in order",
+    ],
+  },
+  {
+    slug: "linked",
+    name: "Linked List",
+    tagline: "Nodes in a chain",
+    blurb:
+      "Each node stores a value and a pointer to the next one — no shifting on insert, just relinking. Reaching position i means walking there, which is the price of the flexibility.",
+    icon: Link2,
+    accent: "rose",
+    hex: "#fb7185",
+    oklch: "oklch(0.8 0.14 14)",
+    access: "O(n)",
+    search: "O(n)",
+    insert: "O(1)*",
+    delete: "O(1)*",
+    space: "O(n)",
+    methods: "insertHead · insertAt · deleteAt · traverse — O(1) at the head, O(n) to reach a position",
+    demo: [
+      "music playlists with next & previous",
+      "undo chains inside editors",
+      "memory allocators chaining free blocks",
     ],
   },
   {
@@ -783,5 +813,913 @@ export const SNIPPETS: Record<
     cpp: GRAPH_CODE_CPP,
     java: GRAPH_CODE_JAVA,
   },
+  // linked-list snippets live in LIST_SNIPPETS below (singly/doubly/circular)
+  linked: { js: "", py: "", c: "", cpp: "", java: "" },
   "": { js: "", py: "", c: "", cpp: "", java: "" },
+};
+
+/* ------------------------------------------------------------------ */
+/* Linked list snippets — singly / doubly / circular, five languages   */
+/* ------------------------------------------------------------------ */
+
+export type ListVariant = "singly" | "doubly" | "circular";
+
+export const LIST_VARIANTS: { id: ListVariant; label: string; blurb: string }[] = [
+  { id: "singly", label: "Singly", blurb: "next only — forward chain" },
+  { id: "doubly", label: "Doubly", blurb: "next + prev — walk both ways" },
+  { id: "circular", label: "Circular", blurb: "tail loops back to head" },
+];
+
+export const LIST_CODE_SINGLY_JS = `class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class SinglyLinkedList {
+  head = null;
+
+  insertAtHead(value) {              // O(1)
+    const node = new Node(value);
+    node.next = this.head;
+    this.head = node;
+  }
+
+  insertAtTail(value) {              // O(n) — walk to the end
+    const node = new Node(value);
+    if (!this.head) return (this.head = node);
+    let cur = this.head;
+    while (cur.next) cur = cur.next;
+    cur.next = node;
+  }
+
+  insertAt(index, value) {           // O(n) — stop one node early
+    if (index === 0) return this.insertAtHead(value);
+    let prev = this.head;
+    for (let i = 0; i < index - 1 && prev; i++) prev = prev.next;
+    if (!prev) throw new RangeError("index out of range");
+    const node = new Node(value);
+    node.next = prev.next;
+    prev.next = node;
+  }
+
+  deleteAt(index) {                  // O(n)
+    if (!this.head) return;
+    if (index === 0) {
+      this.head = this.head.next;    // unlink the head
+      return;
+    }
+    let prev = this.head;
+    for (let i = 0; i < index - 1 && prev.next?.next; i++) prev = prev.next;
+    if (prev.next) prev.next = prev.next.next;
+  }
+
+  *traverse() {                      // O(n) — follow the chain
+    for (let cur = this.head; cur; cur = cur.next) yield cur.value;
+  }
+}`;
+
+export const LIST_CODE_SINGLY_PY = `class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class SinglyLinkedList:
+    def __init__(self):
+        self.head = None
+
+    def insert_at_head(self, value):   # O(1)
+        node = Node(value)
+        node.next = self.head
+        self.head = node
+
+    def insert_at_tail(self, value):   # O(n)
+        node = Node(value)
+        if not self.head:
+            self.head = node
+            return
+        cur = self.head
+        while cur.next:
+            cur = cur.next
+        cur.next = node
+
+    def insert_at(self, index, value): # O(n)
+        if index == 0:
+            return self.insert_at_head(value)
+        prev = self.head
+        for _ in range(index - 1):
+            if prev is None:
+                raise IndexError("index out of range")
+            prev = prev.next
+        node = Node(value)
+        node.next, prev.next = prev.next, node
+
+    def delete_at(self, index):        # O(n)
+        if not self.head:
+            return
+        if index == 0:
+            self.head = self.head.next # unlink the head
+            return
+        prev = self.head
+        for _ in range(index - 1):
+            if prev.next is None:
+                return
+            prev = prev.next
+        if prev.next:
+            prev.next = prev.next.next
+
+    def traverse(self):                # O(n)
+        cur = self.head
+        while cur:
+            yield cur.value
+            cur = cur.next`;
+
+export const LIST_CODE_SINGLY_C = `#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+  int value;
+  struct Node *next;
+} Node;
+
+Node *newNode(int value) {
+  Node *n = malloc(sizeof(Node));
+  n->value = value;
+  n->next = NULL;
+  return n;
+}
+
+void insertAtHead(Node **head, int value) {   // O(1)
+  Node *n = newNode(value);
+  n->next = *head;
+  *head = n;
+}
+
+void insertAtTail(Node **head, int value) {   // O(n)
+  Node *n = newNode(value);
+  if (!*head) { *head = n; return; }
+  Node *cur = *head;
+  while (cur->next) cur = cur->next;
+  cur->next = n;
+}
+
+void insertAt(Node **head, int index, int value) {  // O(n)
+  if (index == 0) return insertAtHead(head, value);
+  Node *prev = *head;
+  for (int i = 0; i < index - 1 && prev; i++) prev = prev->next;
+  if (!prev) return;                          // index out of range
+  Node *n = newNode(value);
+  n->next = prev->next;
+  prev->next = n;
+}
+
+void deleteAt(Node **head, int index) {       // O(n)
+  if (!*head) return;
+  Node *tmp;
+  if (index == 0) {                           // unlink the head
+    tmp = *head;
+    *head = (*head)->next;
+    free(tmp);
+    return;
+  }
+  Node *prev = *head;
+  for (int i = 0; i < index - 1 && prev->next; i++) prev = prev->next;
+  if (!prev->next) return;
+  tmp = prev->next;
+  prev->next = tmp->next;
+  free(tmp);
+}
+
+void traverse(const Node *head) {             // O(n)
+  for (const Node *cur = head; cur; cur = cur->next)
+    printf("%d -> ", cur->value);
+  printf("NULL\\n");
+}
+
+void freeList(Node *head) {
+  while (head) {
+    Node *next = head->next;
+    free(head);
+    head = next;
+  }
+}`;
+
+export const LIST_CODE_SINGLY_CPP = `#include <iostream>
+
+struct Node {
+  int value;
+  Node *next = nullptr;
+  explicit Node(int v) : value(v) {}
+};
+
+class SinglyLinkedList {
+  Node *head = nullptr;
+
+ public:
+  void insertAtHead(int value) {           // O(1)
+    Node *n = new Node(value);
+    n->next = head;
+    head = n;
+  }
+
+  void insertAt(int index, int value) {    // O(n)
+    if (index == 0) return insertAtHead(value);
+    Node *prev = head;
+    for (int i = 0; i < index - 1 && prev; i++) prev = prev->next;
+    if (!prev) throw std::out_of_range("index");
+    Node *n = new Node(value);
+    n->next = prev->next;
+    prev->next = n;
+  }
+
+  void deleteAt(int index) {               // O(n)
+    if (!head) return;
+    Node *gone;
+    if (index == 0) {
+      gone = head;
+      head = head->next;                   // unlink the head
+    } else {
+      Node *prev = head;
+      for (int i = 0; i < index - 1 && prev->next; i++) prev = prev->next;
+      if (!prev->next) return;
+      gone = prev->next;
+      prev->next = gone->next;
+    }
+    delete gone;
+  }
+
+  void traverse() const {                  // O(n)
+    for (Node *cur = head; cur; cur = cur->next)
+      std::cout << cur->value << " -> ";
+    std::cout << "NULL\\n";
+  }
+};`;
+
+export const LIST_CODE_SINGLY_JAVA = `class Node {
+  int value;
+  Node next;
+
+  Node(int value) { this.value = value; }
+}
+
+class SinglyLinkedList {
+  Node head;
+
+  void insertAtHead(int value) {          // O(1)
+    Node node = new Node(value);
+    node.next = head;
+    head = node;
+  }
+
+  void insertAt(int index, int value) {   // O(n)
+    if (index == 0) { insertAtHead(value); return; }
+    Node prev = head;
+    for (int i = 0; i < index - 1 && prev != null; i++) prev = prev.next;
+    if (prev == null) throw new IndexOutOfBoundsException("index");
+    Node node = new Node(value);
+    node.next = prev.next;
+    prev.next = node;
+  }
+
+  void deleteAt(int index) {              // O(n)
+    if (head == null) return;
+    if (index == 0) {
+      head = head.next;                   // unlink the head
+      return;
+    }
+    Node prev = head;
+    for (int i = 0; i < index - 1 && prev.next != null; i++) prev = prev.next;
+    if (prev.next != null) prev.next = prev.next.next;
+  }
+
+  void traverse() {                       // O(n)
+    for (Node cur = head; cur != null; cur = cur.next)
+      System.out.print(cur.value + " -> ");
+    System.out.println("NULL");
+  }
+}`;
+
+export const LIST_CODE_DOUBLY_JS = `class Node {
+  constructor(value) {
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
+
+class DoublyLinkedList {
+  head = null;
+  tail = null;
+
+  insertAtHead(value) {              // O(1)
+    const node = new Node(value);
+    node.next = this.head;
+    if (this.head) this.head.prev = node;
+    else this.tail = node;           // first node becomes both ends
+    this.head = node;
+  }
+
+  insertAtTail(value) {              // O(1) — the tail pointer pays off
+    const node = new Node(value);
+    node.prev = this.tail;
+    if (this.tail) this.tail.next = node;
+    else this.head = node;
+    this.tail = node;
+  }
+
+  insertAt(index, value) {           // O(n)
+    if (index === 0) return this.insertAtHead(value);
+    let prev = this.head;
+    for (let i = 0; i < index - 1 && prev?.next; i++) prev = prev.next;
+    if (!prev) throw new RangeError("index out of range");
+    if (!prev.next) return this.insertAtTail(value);
+    const node = new Node(value);
+    node.prev = prev;
+    node.next = prev.next;
+    prev.next.prev = node;
+    prev.next = node;                // four links, in a safe order
+  }
+
+  deleteAt(index) {                  // O(n)
+    if (!this.head) return;
+    let cur = this.head;
+    for (let i = 0; i < index && cur.next; i++) cur = cur.next;
+    if (cur.prev) cur.prev.next = cur.next;
+    else this.head = cur.next;       // deleting the head
+    if (cur.next) cur.next.prev = cur.prev;
+    else this.tail = cur.prev;       // deleting the tail
+  }
+
+  *traverse() {                      // O(n) forward
+    for (let cur = this.head; cur; cur = cur.next) yield cur.value;
+  }
+
+  *traverseBackward() {              // O(n) — the reason prev exists
+    for (let cur = this.tail; cur; cur = cur.prev) yield cur.value;
+  }
+}`;
+
+export const LIST_CODE_DOUBLY_PY = `class Node:
+    def __init__(self, value):
+        self.value = value
+        self.prev = None
+        self.next = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def insert_at_head(self, value):   # O(1)
+        node = Node(value)
+        node.next = self.head
+        if self.head:
+            self.head.prev = node
+        else:
+            self.tail = node           # first node becomes both ends
+        self.head = node
+
+    def insert_at_tail(self, value):   # O(1) — the tail pointer pays off
+        node = Node(value)
+        node.prev = self.tail
+        if self.tail:
+            self.tail.next = node
+        else:
+            self.head = node
+        self.tail = node
+
+    def insert_at(self, index, value): # O(n)
+        if index == 0:
+            return self.insert_at_head(value)
+        prev = self.head
+        for _ in range(index - 1):
+            if prev is None or prev.next is None:
+                raise IndexError("index out of range")
+            prev = prev.next
+        if prev.next is None:
+            return self.insert_at_tail(value)
+        node = Node(value)
+        node.prev, node.next = prev, prev.next
+        prev.next.prev = node
+        prev.next = node               # four links, in a safe order
+
+    def delete_at(self, index):        # O(n)
+        if not self.head:
+            return
+        cur = self.head
+        for _ in range(index):
+            if cur.next is None:
+                return
+            cur = cur.next
+        if cur.prev:
+            cur.prev.next = cur.next
+        else:
+            self.head = cur.next       # deleting the head
+        if cur.next:
+            cur.next.prev = cur.prev
+        else:
+            self.tail = cur.prev       # deleting the tail
+
+    def traverse(self):                # O(n) forward
+        cur = self.head
+        while cur:
+            yield cur.value
+            cur = cur.next
+
+    def traverse_backward(self):       # O(n) — the reason prev exists
+        cur = self.tail
+        while cur:
+            yield cur.value
+            cur = cur.prev`;
+
+export const LIST_CODE_DOUBLY_C = `#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+  int value;
+  struct Node *prev;
+  struct Node *next;
+} Node;
+
+Node *newNode(int value) {
+  Node *n = malloc(sizeof(Node));
+  n->value = value;
+  n->prev = n->next = NULL;
+  return n;
+}
+
+void insertAtHead(Node **head, Node **tail, int value) {   // O(1)
+  Node *n = newNode(value);
+  n->next = *head;
+  if (*head) (*head)->prev = n;
+  else       *tail = n;           /* first node becomes both ends */
+  *head = n;
+}
+
+void insertAtTail(Node **head, Node **tail, int value) {   // O(1)
+  Node *n = newNode(value);
+  n->prev = *tail;
+  if (*tail) (*tail)->next = n;
+  else       *head = n;
+  *tail = n;
+}
+
+void deleteAt(Node **head, Node **tail, int index) {       // O(n)
+  if (!*head) return;
+  Node *cur = *head;
+  for (int i = 0; i < index && cur->next; i++) cur = cur->next;
+  if (cur->prev) cur->prev->next = cur->next;
+  else           *head = cur->next; /* deleting the head */
+  if (cur->next) cur->next->prev = cur->prev;
+  else           *tail = cur->prev; /* deleting the tail */
+  free(cur);
+}
+
+void traverse(const Node *head) {         /* O(n) forward */
+  for (const Node *cur = head; cur; cur = cur->next)
+    printf("%d <-> ", cur->value);
+  printf("NULL\\n");
+}
+
+void traverseBackward(const Node *tail) { /* O(n) — the reason prev exists */
+  for (const Node *cur = tail; cur; cur = cur->prev)
+    printf("%d <-> ", cur->value);
+  printf("NULL\\n");
+}`;
+
+export const LIST_CODE_DOUBLY_CPP = `#include <iostream>
+
+struct Node {
+  int value;
+  Node *prev = nullptr;
+  Node *next = nullptr;
+  explicit Node(int v) : value(v) {}
+};
+
+class DoublyLinkedList {
+  Node *head = nullptr;
+  Node *tail = nullptr;
+
+ public:
+  void insertAtHead(int value) {          // O(1)
+    Node *n = new Node(value);
+    n->next = head;
+    if (head) head->prev = n;
+    else      tail = n;                   // first node becomes both ends
+    head = n;
+  }
+
+  void insertAtTail(int value) {          // O(1) — the tail pointer pays off
+    Node *n = new Node(value);
+    n->prev = tail;
+    if (tail) tail->next = n;
+    else      head = n;
+    tail = n;
+  }
+
+  void deleteAt(int index) {              // O(n)
+    if (!head) return;
+    Node *cur = head;
+    for (int i = 0; i < index && cur->next; i++) cur = cur->next;
+    if (cur->prev) cur->prev->next = cur->next;
+    else           head = cur->next;      // deleting the head
+    if (cur->next) cur->next->prev = cur->prev;
+    else           tail = cur->prev;      // deleting the tail
+    delete cur;
+  }
+
+  void traverse() const {                 // O(n) forward
+    for (Node *cur = head; cur; cur = cur->next)
+      std::cout << cur->value << " <-> ";
+    std::cout << "NULL\\n";
+  }
+
+  void traverseBackward() const {         // O(n) — the reason prev exists
+    for (Node *cur = tail; cur; cur = cur->prev)
+      std::cout << cur->value << " <-> ";
+    std::cout << "NULL\\n";
+  }
+};`;
+
+export const LIST_CODE_DOUBLY_JAVA = `class Node {
+  int value;
+  Node prev, next;
+
+  Node(int value) { this.value = value; }
+}
+
+class DoublyLinkedList {
+  Node head, tail;
+
+  void insertAtHead(int value) {          // O(1)
+    Node node = new Node(value);
+    node.next = head;
+    if (head != null) head.prev = node;
+    else              tail = node;        // first node becomes both ends
+    head = node;
+  }
+
+  void insertAtTail(int value) {          // O(1) — the tail pointer pays off
+    Node node = new Node(value);
+    node.prev = tail;
+    if (tail != null) tail.next = node;
+    else              head = node;
+    tail = node;
+  }
+
+  void deleteAt(int index) {              // O(n)
+    if (head == null) return;
+    Node cur = head;
+    for (int i = 0; i < index && cur.next != null; i++) cur = cur.next;
+    if (cur.prev != null) cur.prev.next = cur.next;
+    else                  head = cur.next;  // deleting the head
+    if (cur.next != null) cur.next.prev = cur.prev;
+    else                  tail = cur.prev;  // deleting the tail
+  }
+
+  void traverse() {                       // O(n) forward
+    for (Node cur = head; cur != null; cur = cur.next)
+      System.out.print(cur.value + " <-> ");
+    System.out.println("NULL");
+  }
+
+  void traverseBackward() {               // O(n) — the reason prev exists
+    for (Node cur = tail; cur != null; cur = cur.prev)
+      System.out.print(cur.value + " <-> ");
+    System.out.println("NULL");
+  }
+}`;
+
+export const LIST_CODE_CIRCULAR_JS = `class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class CircularLinkedList {
+  tail = null;              // tail.next is the head — one pointer is enough
+
+  insertAtHead(value) {     // O(1)
+    const node = new Node(value);
+    if (!this.tail) {
+      node.next = node;     // a lone node points at itself
+    } else {
+      node.next = this.tail.next;
+      this.tail.next = node;
+    }
+    this.tail = this.tail ?? node;
+  }
+
+  insertAtTail(value) {     // O(1) — same, but the new node becomes the tail
+    this.insertAtHead(value);
+    this.tail = this.tail.next; // old head is the new tail
+  }
+
+  insertAt(index, value) {  // O(n)
+    if (!this.tail || index <= 0) return this.insertAtHead(value);
+    let prev = this.tail;
+    for (let i = 0; i < index && prev.next !== this.tail; i++) prev = prev.next;
+    const node = new Node(value);
+    node.next = prev.next;
+    prev.next = node;
+    if (prev === this.tail) this.tail = node; // inserted after the tail
+  }
+
+  deleteAt(index) {         // O(n)
+    if (!this.tail) return;
+    let prev = this.tail;
+    for (let i = 0; i < index; i++) {
+      if (prev.next === this.tail) return;  // index out of range
+      prev = prev.next;
+    }
+    const gone = prev.next;
+    if (gone === prev) return (this.tail = null); // last node left
+    prev.next = gone.next;
+    if (gone === this.tail) this.tail = prev;     // deleted the tail
+  }
+
+  *traverse(rounds = 1) {   // O(n) — and it can loop forever by design
+    if (!this.tail) return;
+    let cur = this.tail.next; // the head
+    let count = 0;
+    const size = this.size();
+    while (count < size * rounds) {
+      yield cur.value;
+      cur = cur.next;
+      count++;
+    }
+  }
+
+  size() {
+    if (!this.tail) return 0;
+    let n = 1;
+    for (let cur = this.tail.next; cur !== this.tail; cur = cur.next) n++;
+    return n;
+  }
+}`;
+
+export const LIST_CODE_CIRCULAR_PY = `class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class CircularLinkedList:
+    def __init__(self):
+        self.tail = None         # tail.next is the head — one pointer is enough
+
+    def insert_at_head(self, value):   # O(1)
+        node = Node(value)
+        if not self.tail:
+            node.next = node           # a lone node points at itself
+            self.tail = node
+        else:
+            node.next = self.tail.next
+            self.tail.next = node
+
+    def insert_at(self, index, value): # O(n)
+        if not self.tail or index <= 0:
+            return self.insert_at_head(value)
+        prev = self.tail
+        for _ in range(index):
+            if prev.next is self.tail:
+                break
+            prev = prev.next
+        node = Node(value)
+        node.next = prev.next
+        prev.next = node
+        if prev is self.tail:      # inserted after the tail
+            self.tail = node
+
+    def delete_at(self, index):    # O(n)
+        if not self.tail:
+            return
+        prev = self.tail
+        for _ in range(index):
+            if prev.next is self.tail:
+                return             # index out of range
+            prev = prev.next
+        gone = prev.next
+        if gone is prev:
+            self.tail = None       # last node left
+            return
+        prev.next = gone.next
+        if gone is self.tail:      # deleted the tail
+            self.tail = prev
+
+    def traverse(self, rounds=1):  # O(n) — and it can loop forever by design
+        if not self.tail:
+            return
+        size = self.size()
+        cur = self.tail.next       # the head
+        for _ in range(size * rounds):
+            yield cur.value
+            cur = cur.next
+
+    def size(self):
+        if not self.tail:
+            return 0
+        n = 1
+        cur = self.tail.next
+        while cur is not self.tail:
+            n += 1
+            cur = cur.next
+        return n`;
+
+export const LIST_CODE_CIRCULAR_C = `#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+  int value;
+  struct Node *next;
+} Node;
+
+/* We keep only the tail: tail->next is the head. */
+
+void insertAtHead(Node **tail, int value) {   // O(1)
+  Node *n = malloc(sizeof(Node));
+  n->value = value;
+  if (!*tail) {
+    n->next = n;               /* a lone node points at itself */
+  } else {
+    n->next = (*tail)->next;
+    (*tail)->next = n;
+  }
+  if (!*tail) *tail = n;
+}
+
+void insertAtTail(Node **tail, int value) {   // O(1)
+  insertAtHead(tail, value);
+  *tail = (*tail)->next;      /* walk one step: old head is new tail */
+}
+
+void deleteAt(Node **tail, int index) {       // O(n)
+  if (!*tail) return;
+  Node *prev = *tail;
+  for (int i = 0; i < index; i++) {
+    if (prev->next == *tail) return;          /* index out of range */
+    prev = prev->next;
+  }
+  Node *gone = prev->next;
+  if (gone == prev) {           /* last node left */
+    *tail = NULL;
+  } else {
+    prev->next = gone->next;
+    if (gone == *tail) *tail = prev;          /* deleted the tail */
+  }
+  free(gone);
+}
+
+void traverse(const Node *tail) {             /* O(n) per lap */
+  if (!tail) { printf("empty\\n"); return; }
+  const Node *cur = tail->next; /* the head */
+  do {
+    printf("%d -> ", cur->value);
+    cur = cur->next;
+  } while (cur != tail->next);  /* stop after one full circle */
+  printf("(back to head)\\n");
+}`;
+
+export const LIST_CODE_CIRCULAR_CPP = `#include <iostream>
+
+struct Node {
+  int value;
+  Node *next = nullptr;
+  explicit Node(int v) : value(v) {}
+};
+
+class CircularLinkedList {
+  Node *tail = nullptr;        // tail->next is the head
+
+ public:
+  void insertAtHead(int value) {          // O(1)
+    Node *n = new Node(value);
+    if (!tail) {
+      n->next = n;                        // a lone node points at itself
+      tail = n;
+    } else {
+      n->next = tail->next;
+      tail->next = n;
+    }
+  }
+
+  void insertAtTail(int value) {          // O(1)
+    insertAtHead(value);
+    tail = tail->next;                    // old head is the new tail
+  }
+
+  void deleteAt(int index) {              // O(n)
+    if (!tail) return;
+    Node *prev = tail;
+    for (int i = 0; i < index; i++) {
+      if (prev->next == tail) return;     // index out of range
+      prev = prev->next;
+    }
+    Node *gone = prev->next;
+    if (gone == prev) {                   // last node left
+      tail = nullptr;
+    } else {
+      prev->next = gone->next;
+      if (gone == tail) tail = prev;      // deleted the tail
+    }
+    delete gone;
+  }
+
+  void traverse() const {                 // O(n) — one full circle
+    if (!tail) { std::cout << "empty\\n"; return; }
+    Node *cur = tail->next;               // the head
+    do {
+      std::cout << cur->value << " -> ";
+      cur = cur->next;
+    } while (cur != tail->next);
+    std::cout << "(back to head)\\n";
+  }
+};`;
+
+export const LIST_CODE_CIRCULAR_JAVA = `class Node {
+  int value;
+  Node next;
+
+  Node(int value) { this.value = value; }
+}
+
+class CircularLinkedList {
+  Node tail;                 // tail.next is the head — one pointer is enough
+
+  void insertAtHead(int value) {          // O(1)
+    Node node = new Node(value);
+    if (tail == null) {
+      node.next = node;                   // a lone node points at itself
+      tail = node;
+    } else {
+      node.next = tail.next;
+      tail.next = node;
+    }
+  }
+
+  void insertAtTail(int value) {          // O(1)
+    insertAtHead(value);
+    tail = tail.next;                     // old head is the new tail
+  }
+
+  void insertAt(int index, int value) {   // O(n)
+    if (tail == null || index <= 0) { insertAtHead(value); return; }
+    Node prev = tail;
+    for (int i = 0; i < index && prev.next != tail; i++) prev = prev.next;
+    Node node = new Node(value);
+    node.next = prev.next;
+    prev.next = node;
+    if (prev == tail) tail = node;        // inserted after the tail
+  }
+
+  void deleteAt(int index) {              // O(n)
+    if (tail == null) return;
+    Node prev = tail;
+    for (int i = 0; i < index; i++) {
+      if (prev.next == tail) return;      // index out of range
+      prev = prev.next;
+    }
+    Node gone = prev.next;
+    if (gone == prev) {                   // last node left
+      tail = null;
+    } else {
+      prev.next = gone.next;
+      if (gone == tail) tail = prev;      // deleted the tail
+    }
+  }
+
+  void traverse() {                       // O(n) — one full circle
+    if (tail == null) { System.out.println("empty"); return; }
+    Node cur = tail.next;                 // the head
+    do {
+      System.out.print(cur.value + " -> ");
+      cur = cur.next;
+    } while (cur != tail.next);
+    System.out.println("(back to head)");
+  }
+}`;
+
+export const LIST_SNIPPETS: Record<ListVariant, Record<SnippetLang, string>> = {
+  singly: {
+    js: LIST_CODE_SINGLY_JS,
+    py: LIST_CODE_SINGLY_PY,
+    c: LIST_CODE_SINGLY_C,
+    cpp: LIST_CODE_SINGLY_CPP,
+    java: LIST_CODE_SINGLY_JAVA,
+  },
+  doubly: {
+    js: LIST_CODE_DOUBLY_JS,
+    py: LIST_CODE_DOUBLY_PY,
+    c: LIST_CODE_DOUBLY_C,
+    cpp: LIST_CODE_DOUBLY_CPP,
+    java: LIST_CODE_DOUBLY_JAVA,
+  },
+  circular: {
+    js: LIST_CODE_CIRCULAR_JS,
+    py: LIST_CODE_CIRCULAR_PY,
+    c: LIST_CODE_CIRCULAR_C,
+    cpp: LIST_CODE_CIRCULAR_CPP,
+    java: LIST_CODE_CIRCULAR_JAVA,
+  },
 };

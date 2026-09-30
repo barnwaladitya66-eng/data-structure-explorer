@@ -159,7 +159,7 @@ function SiteFooter() {
               big screen, let students drive the operations.
             </p>
             <Badge variant="outline" className="mt-3 border-border/70 text-slate-400">
-              v1 · Stack · Queue · Tree · Graph
+              v1 · Stack · Queue · Linked List · Tree · Graph
             </Badge>
           </div>
         </div>
