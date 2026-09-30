@@ -25,11 +25,6 @@ function SiteHeader() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
-  // close the mobile menu whenever the route changes
-  useEffect(() => {
-    setOpen(false);
-  }, [location.pathname]);
-
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
@@ -86,11 +81,12 @@ function SiteHeader() {
                   const accent =
                     "accent" in item ? ACCENTS[item.accent as keyof typeof ACCENTS] : null;
                   return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={cn(
-                        "flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                         active
                           ? cn("bg-white/5", accent ? accent.text : "text-cyan-300")
                           : "text-slate-400 hover:bg-white/5 hover:text-slate-100",

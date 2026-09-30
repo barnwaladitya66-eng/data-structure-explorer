@@ -126,7 +126,11 @@ export default function LinkedListPage() {
   const logId = useRef(0);
   const timerRef = useRef<number | null>(null);
   const nodesRef = useRef(nodes);
-  nodesRef.current = nodes;
+
+  // keep the ref in sync after commit so interval callbacks read fresh nodes
+  useEffect(() => {
+    nodesRef.current = nodes;
+  }, [nodes]);
 
   const pushLog = (text: string, tone: LogEntry["tone"]) => {
     logId.current += 1;

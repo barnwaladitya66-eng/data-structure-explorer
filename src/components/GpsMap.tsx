@@ -189,7 +189,7 @@ export function GpsMap() {
     const prev = new Map<number, number>();
     const settled = new Set<number>();
     let relaxing: { from: number; to: number; improved: boolean } | null = null;
-    dist.set(start ?? -1, 0);
+    if (start !== null) dist.set(start, 0);
     for (let i = 0; i < stepIdx && i < steps.length; i++) {
       const s = steps[i];
       if (s.kind === "settle") {
@@ -222,6 +222,7 @@ export function GpsMap() {
       if (i >= result.steps.length) {
         if (timerRef.current !== null) window.clearInterval(timerRef.current);
         timerRef.current = null;
+        setStepIdx(result.steps.length); // include the final settle in playback
         const finalPath = shortestPath(start, dest, result.prev);
         setPath(finalPath);
         setPhase("routed");
@@ -416,10 +417,12 @@ export function GpsMap() {
                 const b = nodeById.get(r.b)!;
                 const key = `${Math.min(r.a, r.b)}-${Math.max(r.a, r.b)}`;
                 const onRoute = routeEdges.has(key);
+                // roads are undirected — flash whichever way Dijkstra walked it
                 const isRelaxing =
                   phase === "exploring" &&
-                  play.relaxing?.from === r.a &&
-                  play.relaxing?.to === r.b;
+                  play.relaxing !== null &&
+                  ((play.relaxing.from === r.a && play.relaxing.to === r.b) ||
+                    (play.relaxing.from === r.b && play.relaxing.to === r.a));
                 const bothSettled = play.settled.has(r.a) && play.settled.has(r.b);
                 return (
                   <g key={i}>

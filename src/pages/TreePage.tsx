@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import {
   bstInsert,
   countNodes,
-  makeNode,
   treeDepth,
   traversalSteps,
   type BSTNode,

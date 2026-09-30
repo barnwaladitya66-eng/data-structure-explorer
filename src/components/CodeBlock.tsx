@@ -1,17 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { tokenColor, tokenize, type CodeLang } from "@/lib/highlight";
-import type { AccentName, StructureMeta } from "@/lib/structures";
+import type { StructureMeta } from "@/lib/structures";
 import { Check, Copy, FileCode2 } from "lucide-react";
 import { useState } from "react";
-
-const ACCENT_TEXT: Record<AccentName, string> = {
-  cyan: "text-cyan-300",
-  violet: "text-violet-300",
-  emerald: "text-emerald-300",
-  amber: "text-amber-300",
-  rose: "text-rose-300",
-};
 
 /* ------------------------------------------------------------------ */
 /* Token renderer                                                      */
