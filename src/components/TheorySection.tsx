@@ -1,134 +1,93 @@
+import { type AccentName, ACCENTS } from "@/lib/structures";
 import type { TheoryPageContent } from "@/lib/theory";
-import type { AccentName } from "@/lib/structures";
-import { ACCENTS } from "@/lib/structures";
-import { cn } from "@/lib/utils";
-import { BookOpen } from "lucide-react";
-import { useState } from "react";
-
-const ACCENT_CHIP: Record<AccentName, string> = {
-  cyan: "border-cyan-400/30 bg-cyan-400/10 text-cyan-300",
-  violet: "border-violet-400/30 bg-violet-400/10 text-violet-300",
-  rose: "border-rose-400/30 bg-rose-400/10 text-rose-300",
-  emerald: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-  amber: "border-amber-400/30 bg-amber-400/10 text-amber-300",
-};
-
-const ACCENT_TITLE: Record<AccentName, string> = {
-  cyan: "text-cyan-300",
-  violet: "text-violet-300",
-  rose: "text-rose-300",
-  emerald: "text-emerald-300",
-  amber: "text-amber-300",
-};
+import { motion } from "framer-motion";
+import { BookOpen, Sparkles } from "lucide-react";
 
 /**
- * Accordion-style theory section — one collapsible block per syllabus topic.
- * First block starts open so the section never looks empty in a demo.
+ * Theory — renders a unit's TheoryPageContent as accent-themed cards.
+ * Used on every structure page between the visualizer and the code tabs.
  */
 export function TheorySection({
-  content,
+  theory,
   accent,
+  subtitle,
 }: {
-  content: TheoryPageContent;
+  theory: TheoryPageContent;
   accent: AccentName;
+  subtitle?: string;
 }) {
-  const [open, setOpen] = useState<number | null>(0);
-
   return (
-    <section className="mt-12">
-      <div className="flex flex-wrap items-center gap-3">
+    <section id="theory" className="mt-14">
+      <div className="flex items-center gap-3">
         <span
-          className={cn(
-            "flex size-8 items-center justify-center rounded-lg border",
-            ACCENT_CHIP[accent],
-          )}
+          className={`flex size-10 items-center justify-center rounded-xl border ${ACCENTS[accent].border} ${ACCENTS[accent].bg} ${ACCENTS[accent].text}`}
         >
-          <BookOpen className="size-4" />
+          <BookOpen className="size-5" />
         </span>
-        <h2 className="text-xl font-bold tracking-tight">{content.title}</h2>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight">Theory</h2>
+          <p className="text-sm text-muted-foreground">
+            {subtitle ?? theory.blurb}
+          </p>
+        </div>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">{content.blurb}</p>
 
-      <div className="mt-5 space-y-2.5">
-        {content.blocks.map((block, i) => {
-          const isOpen = open === i;
-          return (
-            <div
-              key={block.title}
-              className={cn(
-                "overflow-hidden rounded-xl border transition-colors",
-                isOpen
-                  ? cn("border-border bg-card/90", ACCENTS[accent].border)
-                  : "border-border/60 bg-card/40 hover:border-border",
-              )}
-            >
-              <button
-                onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-                aria-expanded={isOpen}
-              >
-                <span className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "font-mono text-[10px] font-bold uppercase tracking-widest",
-                      ACCENT_TITLE[accent],
-                    )}
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        {theory.blocks.map((block, i) => (
+          <motion.article
+            key={block.title}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.35, delay: Math.min(i * 0.05, 0.3) }}
+            className="rounded-2xl border border-border/70 bg-card/80 p-5"
+          >
+            <h3 className="text-base font-bold tracking-tight text-foreground">
+              {block.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {block.intro}
+            </p>
+            <ul className="mt-3 space-y-1.5">
+              {block.points.map((point) => {
+                const [term, ...rest] = point.split(" — ");
+                return (
+                  <li
+                    key={point}
+                    className="flex gap-2 text-[13px] leading-relaxed text-slate-300"
                   >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-sm font-semibold">{block.title}</span>
-                </span>
-                <span
-                  className={cn(
-                    "shrink-0 font-mono text-xs text-slate-500 transition-transform duration-200",
-                    isOpen && "rotate-45",
-                  )}
-                >
-                  +
-                </span>
-              </button>
-              {isOpen && (
-                <div className="border-t border-border/50 px-4 pb-4 pt-3">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {block.intro}
-                  </p>
-                  <ul className="mt-3 space-y-1.5">
-                    {block.points.map((point) => {
-                      const [term, ...rest] = point.split(" — ");
-                      const detail = rest.join(" — ");
-                      return (
-                        <li
-                          key={point}
-                          className="flex gap-2 text-[13px] leading-relaxed"
-                        >
-                          <span className={cn("mt-0.5 font-mono", ACCENT_TITLE[accent])}>
-                            ▸
+                    <span
+                      className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${ACCENTS[accent].dot}`}
+                    />
+                    <span>
+                      {term !== point && rest.length > 0 ? (
+                        <>
+                          <span
+                            className={`font-semibold ${ACCENTS[accent].text}`}
+                          >
+                            {term}
                           </span>
-                          <span className="text-slate-300">
-                            {detail ? (
-                              <>
-                                <span className="font-medium text-foreground">
-                                  {term}
-                                </span>
-                                <span className="text-muted-foreground">
-                                  {" — "}
-                                  {detail}
-                                </span>
-                              </>
-                            ) : (
-                              point
-                            )}
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                          <span className="text-slate-400"> — </span>
+                          {rest.join(" — ")}
+                        </>
+                        ) : (
+                          point
+                        )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </motion.article>
+        ))}
       </div>
+
+      <p
+        className={`mt-4 flex items-center gap-2 font-mono text-[11px] ${ACCENTS[accent].text}`}
+      >
+        <Sparkles className="size-3" />
+        {theory.title}
+      </p>
     </section>
   );
 }

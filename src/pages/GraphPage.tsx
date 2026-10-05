@@ -1,6 +1,7 @@
 import { CodeTabs } from "@/components/CodeBlock";
 import { GpsMap } from "@/components/GpsMap";
 import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
+import { TheorySection } from "@/components/TheorySection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,6 +9,7 @@ import {
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
+import { GRAPH_THEORY } from "@/lib/theory";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Eraser, Link2, Play, Plus, RotateCcw } from "lucide-react";
@@ -525,6 +527,13 @@ export default function GraphPage() {
 
       {/* GPS navigation simulation — Dijkstra on a weighted city map */}
       <GpsMap />
+
+      {/* theory */}
+      <TheorySection
+        theory={GRAPH_THEORY}
+        accent={meta.accent}
+        subtitle="Definitions, graph types, BFS & DFS, spanning trees, MST and Dijkstra's shortest path."
+      />
 
       {/* code */}
       <section className="mt-12">

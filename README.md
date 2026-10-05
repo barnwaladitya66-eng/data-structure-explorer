@@ -6,12 +6,13 @@
 
 ## ✨ Features
 
-- **Interactive visualizers** for all four core data structures:
+- **Interactive visualizers** for all five core data structures:
   - **Stack** — push/pop with animated LIFO cells and overflow guard
   - **Queue** — enqueue/dequeue with front/rear pointers
   - **Tree** — insert/search through a binary search tree, animated node-by-node traversal
   - **Linked List** — singly, doubly, and circular variants with animated insert/delete at the head, middle, and tail, plus full traversal; every variant ships its own five-language implementation
   - **Graph** — build an adjacency list and step through BFS/DFS traversal, plus a **GPS navigation simulator** where Dijkstra plans the fastest route across a weighted city map, with turn-by-turn directions and an animated car
+- **Theory section on every structure page** (`src/lib/theory.ts` → `src/components/TheorySection.tsx`): definitions and key terms, how the structure is programmed in C, its variants/types (queue types, singly/doubly/circular, graph taxonomy), traversals & notations, and the classic applications — matching the course syllabus unit by unit.
 - **Implementation section on every page** with tabbed code snippets in **JavaScript, Python, C, C++, and Java**, with a lightweight zero-dependency syntax highlighter (custom tokenizer in `src/lib/highlight.ts`).
 - **Dark "gritted" theme** — dark navy backdrop, per-structure accent colors, grid backdrop, Framer Motion page transitions.
 - **Favicon + manifest** matching the site's cyan-on-navy brand tile.
@@ -21,11 +22,11 @@
 | Route        | Description                                        |
 | ------------ | -------------------------------------------------- |
 | `/`          | Landing page with structure cards and CTAs         |
-| `/stack`     | Stack visualizer + implementations                 |
-| `/queue`     | Queue visualizer + implementations                 |
-| `/linked`    | Linked list (singly / doubly / circular) + implementations |
-| `/tree`      | BST visualizer + implementations                   |
-| `/graph`     | Graph visualizer + implementations                 |
+| `/stack`     | Stack visualizer + theory + implementations        |
+| `/queue`     | Queue visualizer + theory + implementations        |
+| `/linked`    | Linked list (singly / doubly / circular) + theory + implementations |
+| `/tree`      | BST visualizer + theory + implementations          |
+| `/graph`     | Graph visualizer + GPS sim + theory + implementations |
 | `/auth`      | Sign in / sign up (email OTP)                      |
 | `/dashboard` | Protected dashboard (`RequireAuth`)                |
 

@@ -1,5 +1,6 @@
 import { CodeTabs } from "@/components/CodeBlock";
 import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
+import { TheorySection } from "@/components/TheorySection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,6 +10,7 @@ import {
   type ListVariant,
   type StructureMeta,
 } from "@/lib/structures";
+import { LINKED_THEORY } from "@/lib/theory";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -620,6 +622,13 @@ export default function LinkedListPage() {
           <OpLog entries={log} />
         </div>
       </div>
+
+      {/* theory */}
+      <TheorySection
+        theory={LINKED_THEORY}
+        accent={meta.accent}
+        subtitle="Dynamic memory, the C struct, all three list flavours, linked stack/queue and where lists win."
+      />
 
       {/* code */}
       <section className="mt-12">

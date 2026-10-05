@@ -1,5 +1,6 @@
 import { CodeTabs } from "@/components/CodeBlock";
 import { OpLog, ComplexityPanel, type LogEntry } from "@/components/panels";
+import { TheorySection } from "@/components/TheorySection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,6 +8,7 @@ import {
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
+import { STACK_PAGE_THEORY } from "@/lib/theory";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDownToLine, ArrowUpFromLine, Eye, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
@@ -188,6 +190,13 @@ export default function StackPage() {
           <OpLog entries={log} />
         </div>
       </div>
+
+      {/* theory */}
+      <TheorySection
+        theory={STACK_PAGE_THEORY}
+        accent={meta.accent}
+        subtitle="Definitions, the C array recipe, expression notations, recursion and where stacks run the world."
+      />
 
       {/* code */}
       <section className="mt-12">

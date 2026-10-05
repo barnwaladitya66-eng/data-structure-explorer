@@ -123,7 +123,7 @@ function SiteFooter() {
               Structure<span className="-ml-2 text-cyan-300">Lab</span>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Interactive visualizers for the four structures every CS course
+              Interactive visualizers for the five structures every CS course
               starts with. Built for teachers, live demos, and curious minds —
               no account required.
             </p>

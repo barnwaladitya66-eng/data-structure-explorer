@@ -1,5 +1,6 @@
 import { CodeTabs } from "@/components/CodeBlock";
 import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
+import { TheorySection } from "@/components/TheorySection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,6 +8,7 @@ import {
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
+import { TREE_THEORY } from "@/lib/theory";
 import { cn } from "@/lib/utils";
 import {
   bstInsert,
@@ -378,6 +380,13 @@ export default function TreePage() {
           </div>
         </div>
       </div>
+
+      {/* theory */}
+      <TheorySection
+        theory={TREE_THEORY}
+        accent={meta.accent}
+        subtitle="Definitions, traversals, general-tree conversion, threaded trees, heaps, Huffman, AVL and 2-3."
+      />
 
       {/* code */}
       <section className="mt-12">

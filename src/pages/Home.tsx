@@ -124,7 +124,7 @@ export default function Home() {
                 href="#structures"
                 className="inline-flex items-center gap-2 rounded-xl border border-border/80 px-5 py-2.5 text-sm font-semibold text-slate-200 transition-colors hover:border-cyan-400/40 hover:text-cyan-300"
               >
-                Browse the four structures
+                Browse the five structures
               </a>
             </motion.div>
 

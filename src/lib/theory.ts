@@ -125,6 +125,34 @@ export const STACK_THEORY: TheoryPageContent = {
   ],
 };
 
+/** Stack page content: stack blocks from the unit + the shared applications block. */
+export const STACK_PAGE_THEORY: TheoryPageContent = {
+  title: STACK_THEORY.title,
+  blurb:
+    "Definition, array programming in C, expression notations, recursion and the applications examiners love.",
+  blocks: [
+    STACK_THEORY.blocks[0], // stack definition & concepts
+    STACK_THEORY.blocks[1], // programming a stack with an array
+    STACK_THEORY.blocks[2], // infix / prefix / postfix
+    STACK_THEORY.blocks[3], // recursion & the call stack
+    STACK_THEORY.blocks[4], // Tower of Hanoi
+    STACK_THEORY.blocks[8], // applications of stack & queue
+  ],
+};
+
+/** Queue page content: queue blocks from the unit + the shared applications block. */
+export const QUEUE_PAGE_THEORY: TheoryPageContent = {
+  title: STACK_THEORY.title,
+  blurb:
+    "Representation, array programming in C, the four queue variants and where queues run the world.",
+  blocks: [
+    STACK_THEORY.blocks[5], // representation & operations of a queue
+    STACK_THEORY.blocks[6], // programming a queue with an array
+    STACK_THEORY.blocks[7], // types of queue
+    STACK_THEORY.blocks[8], // applications of stack & queue
+  ],
+};
+
 /* ------------------------------------------------------------------ */
 /* Unit: Linked List I + II                                            */
 /* ------------------------------------------------------------------ */

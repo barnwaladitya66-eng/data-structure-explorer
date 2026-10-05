@@ -1,5 +1,6 @@
 import { CodeTabs } from "@/components/CodeBlock";
 import { ComplexityPanel, OpLog, type LogEntry } from "@/components/panels";
+import { TheorySection } from "@/components/TheorySection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,6 +8,7 @@ import {
   STRUCTURES,
   type StructureMeta,
 } from "@/lib/structures";
+import { QUEUE_PAGE_THEORY } from "@/lib/theory";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRightFromLine, ArrowLeftToLine, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
@@ -185,6 +187,13 @@ export default function QueuePage() {
           <OpLog entries={log} />
         </div>
       </div>
+
+      {/* theory */}
+      <TheorySection
+        theory={QUEUE_PAGE_THEORY}
+        accent={meta.accent}
+        subtitle="Representation, the C array recipe, all four queue variants and where queues run the world."
+      />
 
       {/* code */}
       <section className="mt-12">
