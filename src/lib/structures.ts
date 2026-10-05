@@ -1420,7 +1420,10 @@ class CircularLinkedList {
   insertAt(index, value) {  // O(n)
     if (!this.tail || index <= 0) return this.insertAtHead(value);
     let prev = this.tail;
-    for (let i = 0; i < index && prev.next !== this.tail; i++) prev = prev.next;
+    for (let i = 0; i < index; i++) {
+      prev = prev.next;
+      if (prev === this.tail) break; // clamped to one lap → append
+    }
     const node = new Node(value);
     node.next = prev.next;
     prev.next = node;
@@ -1483,9 +1486,9 @@ class CircularLinkedList:
             return self.insert_at_head(value)
         prev = self.tail
         for _ in range(index):
-            if prev.next is self.tail:
-                break
             prev = prev.next
+            if prev is self.tail:
+                break                  # clamped to one lap → append
         node = Node(value)
         node.next = prev.next
         prev.next = node
@@ -1666,7 +1669,10 @@ class CircularLinkedList {
   void insertAt(int index, int value) {   // O(n)
     if (tail == null || index <= 0) { insertAtHead(value); return; }
     Node prev = tail;
-    for (int i = 0; i < index && prev.next != tail; i++) prev = prev.next;
+    for (int i = 0; i < index; i++) {
+      prev = prev.next;
+      if (prev == tail) break;            // clamped to one lap → append
+    }
     Node node = new Node(value);
     node.next = prev.next;
     prev.next = node;

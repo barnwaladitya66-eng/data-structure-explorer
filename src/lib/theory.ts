@@ -1,5 +1,3 @@
-import type { AccentName } from "@/lib/structures";
-
 export interface TheoryBlock {
   title: string;
   intro: string;

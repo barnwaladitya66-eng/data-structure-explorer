@@ -1,11 +1,11 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "StructureLab — Interactive Data Structure Visualizers",
+  "short_name": "StructureLab",
+  "description": "Interactive, classroom-ready visualizers for stacks, queues, linked lists, trees and graphs, with implementations in JavaScript, Python, C, C++ and Java.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
   "icons": [
     {
       "src": "/favicon.svg",
